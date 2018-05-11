@@ -5,7 +5,7 @@
     <groupId>ru.dfkzbt.support</groupId>
     <artifactId>lib-support-file</artifactId>
     <packaging>jar</packaging>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
 
     <name>lib-support-file</name>
     <url>http://maven.apache.org</url>

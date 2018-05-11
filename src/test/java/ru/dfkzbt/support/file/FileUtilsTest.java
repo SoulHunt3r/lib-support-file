@@ -22,7 +22,7 @@ import org.junit.Test;
  * Generic description
  *
  * @author Fedorov Konstantin (mr.fedorov.konstantin@mail.ru)
- * @version 0.1
+ * @version 0.2-SNAPSHOT
  * Created on 11.05.2018.
  */
 public class FileUtilsTest {

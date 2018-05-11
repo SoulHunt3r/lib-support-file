@@ -29,7 +29,7 @@ import java.nio.file.Paths;
  * Generic description
  *
  * @author Fedorov Konstantin (mr.fedorov.konstantin@mail.ru)
- * @version 0.1
+ * @version 0.2-SNAPSHOT
  * Created on 05.12.2017.
  */
 public class FileUtils {
