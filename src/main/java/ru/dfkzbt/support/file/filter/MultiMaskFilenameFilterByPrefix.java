@@ -14,20 +14,21 @@
  *    limitations under the License.
  */
 
-package ru.dfkzbt.support.file;
-
-import org.junit.Test;
+package ru.dfkzbt.support.file.filter;
 
 /**
  * Generic description
  *
  * @author Fedorov Konstantin (mr.fedorov.konstantin@mail.ru)
  * @version 0.2-SNAPSHOT
- * Created on 11.05.2018.
+ * Created on 17.05.2018.
  */
-public class FileUtilsTest {
-    @Test
-    public void test() {
-        //
+public class MultiMaskFilenameFilterByPrefix extends MultiMaskFilenameFilterByPrefixAndSuffix {
+    public MultiMaskFilenameFilterByPrefix(String prefixes) {
+        super(prefixes, "");
+    }
+
+    public MultiMaskFilenameFilterByPrefix(String[] prefixes) {
+        super(prefixes, new String[]{""});
     }
 }

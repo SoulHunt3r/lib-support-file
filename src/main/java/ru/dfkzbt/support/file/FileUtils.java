@@ -16,10 +16,13 @@
 
 package ru.dfkzbt.support.file;
 
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
@@ -29,7 +32,7 @@ import java.nio.file.Paths;
  * Generic description
  *
  * @author Fedorov Konstantin (mr.fedorov.konstantin@mail.ru)
- * @version 0.1
+ * @version 0.2-SNAPSHOT
  * Created on 05.12.2017.
  */
 public class FileUtils {
@@ -69,34 +72,15 @@ public class FileUtils {
     }
 
     public static boolean isResourceExistStatic(String resourcePath, String resourceName) throws IllegalArgumentException {
-        String methodWeAreIn = new Throwable().getStackTrace()[0].getMethodName();
+        return isResourceExistStatic(resourcePath + resourceName);
+    }
 
-        if (resourcePath == null || resourceName == null) {
-            logger.error("{} Arguments cant be NULL: {} {}", methodWeAreIn, resourcePath, resourceName);
-            throw new IllegalArgumentException("Arguments cant be null");
-        }
-
-        if (resourcePath.isEmpty() || resourceName.isEmpty()) {
-            logger.error("{} Arguments cant be empty: {} {}", methodWeAreIn, resourcePath, resourceName);
-            throw new IllegalArgumentException("Arguments cant be empty");
-        }
-
-        //URL urlXSDSchema = getClass().getResource(xsdFilename); // do not work in static
-        URL urlResource = null;
+    public static boolean isResourceExistStatic(String resourceFilename) {
         try {
-            urlResource = Class.forName(new Throwable().getStackTrace()[0].getClassName()).getResource(resourcePath + resourceName);
-        } catch (ClassNotFoundException e) {
-            logger.error("Got exeption while locating resource: {}", e.getMessage());
-            logger.trace("Stacktrace: {}", e);
+            getResourceURLStatic(resourceFilename);
+        } catch (FileNotFoundException | ClassNotFoundException e) {
             return false;
         }
-
-        if (urlResource == null) {
-            logger.error("{} URL Failed to locate Resource: {}", methodWeAreIn, (resourcePath + resourceName));
-            return false;
-        }
-
-        logger.debug("{} URL Path to Resource: {}", methodWeAreIn, urlResource.getPath());
 
         return true;
     }
@@ -137,4 +121,61 @@ public class FileUtils {
         return inputStream;
     }
 
+    public static URL getResourceURLStatic(String resourcePath, String resourceName) throws FileNotFoundException, ClassNotFoundException {
+        String methodWeAreIn = new Throwable().getStackTrace()[0].getMethodName();
+
+        if (resourcePath == null || resourceName == null) {
+            logger.error("{} Arguments cant be NULL: {} {}", methodWeAreIn, resourcePath, resourceName);
+            throw new IllegalArgumentException("Arguments cant be null");
+        }
+
+        if (resourcePath.isEmpty() || resourceName.isEmpty()) {
+            logger.error("{} Arguments cant be empty: {} {}", methodWeAreIn, resourcePath, resourceName);
+            throw new IllegalArgumentException("Arguments cant be empty");
+        }
+
+        return getResourceURLStatic(resourcePath + resourceName);
+    }
+
+    public static URL getResourceURLStatic(String resourceFilename) throws ClassNotFoundException, FileNotFoundException {
+        String methodWeAreIn = new Throwable().getStackTrace()[0].getMethodName();
+
+        if (resourceFilename == null) {
+            logger.error("{} Arguments cant be NULL: {}", methodWeAreIn, resourceFilename);
+            throw new IllegalArgumentException("Arguments cant be null");
+        }
+
+        if (resourceFilename.isEmpty()) {
+            logger.error("{} Arguments cant be empty: {}", methodWeAreIn, resourceFilename);
+            throw new IllegalArgumentException("Arguments cant be empty");
+        }
+
+        //URL urlXSDSchema = getClass().getResource(xsdFilename); // do not work in static
+        URL urlResource = null;
+        try {
+            urlResource = Class.forName(new Throwable().getStackTrace()[0].getClassName()).getResource(resourceFilename);
+        } catch (ClassNotFoundException e) {
+            logger.error("Got exeption while locating resource: {}", e.getMessage());
+            logger.trace("Stacktrace: {}", e);
+            throw e;
+        }
+
+        if (urlResource == null) {
+            logger.error("{} URL Failed to locate Resource: {}", methodWeAreIn, resourceFilename);
+            throw new FileNotFoundException("Failed to locate resource: " + resourceFilename);
+        }
+
+        logger.trace("{} URL Path to Resource: {}", methodWeAreIn, urlResource.getPath());
+
+        return urlResource;
+    }
+
+    public static void copyFileResourceToDestFolderPreserveFilename(String srcFilename, String destFolder) throws ClassNotFoundException, IOException {
+        URL srcUrl = getResourceURLStatic(srcFilename);
+
+        String destFilename = FilenameUtils.getName(srcUrl.getPath());
+        logger.trace("dest filename: {}", destFilename);
+
+        org.apache.commons.io.FileUtils.copyURLToFile(srcUrl, new File(destFolder, destFilename));
+    }
 }
