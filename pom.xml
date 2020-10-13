@@ -59,7 +59,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version> <!-- change 3.8.1 to 4.12 later -->
+            <version>4.13.1</version> <!-- change 3.8.1 to 4.13.1 later -->
             <scope>test</scope>
         </dependency>
 
